@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>iOS VPN Profile Generator</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <style>
+            body {
+                padding: 60px 60px 60px 60px;
+            }
+            .header{
+                margin-top: 20px;
+                margin-bottom: 40px;
+            }
+        </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  </head>
+  <body>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <form class="form-horizontal">
+        <fieldset>
+            <!-- Form Name -->
+            <legend>iOS VPN Profile Generator</legend>
+
+            <div class='header'>
+                <p>    This page will generate a .mobileprofile which, when placed on your iOS device, will auto-connect to a VPN.  You can exclude SSIDs from the autoconnect VPN rules.</p>
+                <p>The file generated on this page is done so in your browser - none of this information is sent to this web page.  You also have the option of downloading this file and running it locally.</p>
+            </div>
+            <div class='instructions'>
+                <h5>Instructions</h5>
+                <ul>
+                    <li>Fill out the form below and press the Generate button</li>
+                    <li>Airdrop or Email the file to your iOS device</li>                
+                </ul>
+            </div>
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="name">Name (that will be displayed on the VPN preferences page)</label>
+                <div class="col-md-4">
+                    <input id="name" name="name" type="text" placeholder="" class="form-control input-md" value="Autoconnect VPN">
+                </div>
+            </div>
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="identifier">Identifier (make this unique if you plan on importing >1 profile)</label>
+                <div class="col-md-4">
+                    <input id="identifier" name="identifier" type="text" placeholder="" class="form-control input-md" value='com.vpn.vpn1'>
+                </div>
+            </div>
+
+            <!-- Select Basic -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="autoconnect">Auto-connect</label>
+                <div class="col-md-4">
+                        <select id="autoconnect" name="vpntype" class="form-control">
+                        <option value="wifi">On wifi only</option>
+                        <option value="cellular">On wifi & cellular</option>
+                        <option value="none">Don't auto-connect</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Select Basic -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="vpntype">VPN Type</label>
+                <div class="col-md-4">
+                    <select id="vpntype" name="vpntype" class="form-control">
+                        <option value="L2TP">L2TP</option>
+                        <option value="IKEv2">IKEv2 (Not Yet Supported)</option>
+                        <option value="IPSEC">IPSEC (Not Yet Supported)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="hostname">Hostname</label>
+                <div class="col-md-4">
+                    <input id="hostname" name="hostname" type="text" placeholder="" class="form-control input-md">
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="login">Login</label>
+                <div class="col-md-4">
+                    <input id="login" name="login" type="text" placeholder="" class="form-control input-md">
+                </div>
+            </div>
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="password">Password</label>
+                <div class="col-md-4">
+                    <input id="password" name="password" type="password" placeholder="" class="form-control input-md">
+                </div>
+            </div>
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="shardsecret">Shared Secret</label>
+                <div class="col-md-4">
+                    <input id="sharedsecret" name="sharedsecret" type="password" placeholder="" class="form-control input-md">
+                </div>
+            </div>
+            <!-- Text input-->
+            <div class="form-group" id='ssidformgroup'>
+                <label class="col-md-4 control-label" for="ssids">Comma-separated list of SSIDs, which when connected to, you do NOT want the VPN to auto-connect</label>
+                <div class="col-md-4">
+                    <input id="ssids" name="ssids" type="text" placeholder="" class="form-control input-md">
+                </div>
+            </div>
+            <!-- Button -->
+            <div class="form-group">
+                <div class="col-md-4">
+                    <button id="submit" name="submit" class="btn btn-primary">Generate</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+
+    <script>
+
+
+        function generateUUID () { //Generates RUUID
+            var possible = 'ABCDEF0123456789';
+            let lengths = [8,4,4,4,12];
+            let chunks = [];
+            for (var j = 0; j < lengths.length; j++){
+                var text = '';
+                for (var i = 0; i < lengths[j]; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
+                chunks.push(text);
+
+            }
+            return chunks.join('-');
+        };
+        var xmlString = "";
+        xmlString += '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xmlString += '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n';
+        xmlString += '<plist version="1.0">\n';
+        xmlString += '<dict>\n';
+        xmlString += '  <key>PayloadContent</key>\n';
+        xmlString += '  <array>    ';
+        xmlString += '    <dict>\n';
+        xmlString += '      <key>UserDefinedName</key>\n';
+        xmlString += '      <string>{{name}}</string>\n';
+        xmlString += '      <key>PayloadDisplayName</key>\n';
+        xmlString += '      <string>{{name1}}</string>\n';
+        xmlString += '      <key>PayloadIdentifier</key>\n';
+        xmlString += '      <string>{{identifier}}</string>\n';
+        xmlString += '      <key>PayloadUUID</key>\n';
+        xmlString += '      <string>{{uuid1}}</string>\n';
+        xmlString += '      <key>VPNType</key>\n';
+        xmlString += '      <string>L2TP</string>\n';
+        xmlString += '      <key>IPSec</key>\n';
+        xmlString += '      <dict>\n';
+        xmlString += '        <key>AuthenticationMethod</key>\n';
+        xmlString += '        <string>SharedSecret</string>\n';
+        xmlString += '        <key>LocalIdentifierType</key>\n';
+        xmlString += '        <string>KeyID</string>\n';
+        xmlString += '        <key>SharedSecret</key>\n';
+        xmlString += '        <string>{{sharedsecret}}</string>\n';
+        xmlString += '      </dict>\n';
+        xmlString += '      <key>PPP</key>\n';
+        xmlString += '      <dict>\n';
+        xmlString += '        <key>AuthName</key>\n';
+        xmlString += '        <string>{{login}}</string>\n';
+        xmlString += '        <key>AuthPassword</key>\n';
+        xmlString += '        <string>{{password}}</string>\n';
+        xmlString += '        <key>CommRemoteAddress</key>\n';
+        xmlString += '        <string>{{hostname}}</string>\n';
+        xmlString += '      </dict>\n';
+        xmlString += '      {{onDemandRules}}';
+        xmlString += '      <key>OverridePrimary</key>\n';
+        xmlString += '      <true/>\n';
+        xmlString += '      <key>IPv4</key>\n';
+        xmlString += '      <dict>\n';
+        xmlString += '        <key>OverridePrimary</key>\n';
+        xmlString += '        <integer>1</integer>\n';
+        xmlString += '      </dict>\n';
+        xmlString += '      <key>PayloadType</key>\n';
+        xmlString += '      <string>com.apple.vpn.managed</string>\n';
+        xmlString += '      <key>PayloadVersion</key>\n';
+        xmlString += '      <integer>1</integer>\n';
+        xmlString += '    </dict>\n';
+        xmlString += '</array>\n';
+        xmlString += '  <key>PayloadDisplayName</key>\n';
+        xmlString += '  <string>VPN Configurations</string>\n';
+        xmlString += '  <key>PayloadIdentifier</key>\n';
+        xmlString += '  <string>{{uuid2}}</string>\n';
+        xmlString += '  <key>PayloadRemovalDisallowed</key>\n';
+        xmlString += '  <false/>\n';
+        xmlString += '  <key>PayloadType</key>\n';
+        xmlString += '  <string>Configuration</string>\n';
+        xmlString += '  <key>PayloadUUID</key>\n';
+        xmlString += '  <string>{{uuid3}}</string>\n';
+        xmlString += '  <key>PayloadVersion</key>\n';
+        xmlString += '  <integer>1</integer>\n';
+        xmlString += '</dict>\n';
+        xmlString += '</plist>';
+
+
+        onDemandRules = '';
+        onDemandRules += '<key>OnDemandEnabled</key>\n';
+        onDemandRules += '   <integer>{{onDemandEnabled}}</integer>\n';
+        onDemandRules += '   {{onDemandRulesDict}}'
+
+
+        onDemandRulesArr = [];
+        
+        var wifiDict = ''
+        wifiDict += '        <dict>\n';
+        wifiDict += '          <key>InterfaceTypeMatch</key>\n';
+        wifiDict += '          <string>WiFi</string>\n';
+        wifiDict += '          <key>Action</key>\n';
+        wifiDict += '          <string>Connect</string>\n';
+        wifiDict += '        </dict>\n';
+
+        var wifiDefaultDict = '';
+        wifiDefaultDict += '        <dict>\n';
+        wifiDefaultDict += '          <!-- VPN Default state -->\n';
+        wifiDefaultDict += '          <key>Action</key>\n';
+        wifiDefaultDict += '          <string>Disconnect</string>\n';  //Default state tells it what to do by default. If wifi only is enabled, this should be disabled (so disable on cellular)
+        wifiDefaultDict += '        </dict>\n';
+
+        var cellularDefaultDict = '';
+        cellularDefaultDict += '        <dict>\n';
+        cellularDefaultDict += '          <!-- VPN Default state -->\n';
+        cellularDefaultDict += '          <key>Action</key>\n';
+        cellularDefaultDict += '          <string>Connect</string>\n';  //Default state tells it what to do by default. If wifi only is enabled, this should be disabled (so disable on cellular)
+        cellularDefaultDict += '        </dict>\n';
+
+
+        $(document).ready(function () {
+
+            function download(filename, text) {
+                var element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                element.setAttribute('download', filename);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+            }
+
+            $( "#autoconnect" ).change(function() {
+                if ($("#autoconnect").val() == "none") $("#ssidformgroup").hide()
+                if ($("#autoconnect").val() == "cellular") $("#ssidformgroup").show()
+                if ($("#autoconnect").val() == "wifi") $("#ssidformgroup").show()
+            });
+
+
+
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                var login = $("#login").val(),
+                password = $('#password').val(),
+                sharedsecret = $('#sharedsecret').val(),
+                ssids = $('#ssids').val(),
+                vpntype = $('#vpntype').val(),
+                name = $('#name').val() || 'Autoconnect VPN',
+                hostname = $('#hostname').val(),
+                identifier = $('#identifier').val() || 'com.vpn.vpn1',
+                autoconnect = $('#autoconnect').val();
+
+                if (autoconnect == 'wifi'){
+                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '1');
+                    onDemandRulesArr.push(wifiDict);
+                    onDemandRulesArr.push(wifiDefaultDict);
+                    console.log('Pushing wifi default dict');
+                }
+                if (autoconnect == 'cellular') {
+                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '1');
+                    onDemandRulesArr.push(cellularDefaultDict);
+                    console.log('Pushing on cellular default dict');
+                }
+                if (autoconnect == 'none'){
+                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '0');   
+                    console.log('Removing onDemandEnabled');
+                }
+
+                if (!hostname) return alert('Hostname required')                
+                xmlString = xmlString.replace('{{login}}', login);
+                xmlString = xmlString.replace('{{password}}', password);
+                xmlString = xmlString.replace('{{sharedsecret}}', sharedsecret);
+                xmlString = xmlString.replace('{{hostname}}', hostname);
+                xmlString = xmlString.replace('{{name}}', name);
+                xmlString = xmlString.replace('{{name1}}', name);
+                xmlString = xmlString.replace('{{uuid1}}', generateUUID());
+                xmlString = xmlString.replace('{{uuid2}}', generateUUID());
+                xmlString = xmlString.replace('{{uuid3}}', generateUUID());
+                xmlString = xmlString.replace('{{identifier}}', identifier);
+
+                if (ssids && autoconnect !== 'none'){
+                    onDemandSSID = '';
+                    onDemandSSID += '        <dict>\n';
+                    onDemandSSID += '          <key>InterfaceTypeMatch</key>\n';
+                    onDemandSSID += '          <string>WiFi</string>\n';
+                    onDemandSSID += '          <key>SSIDMatch</key>\n';
+                    onDemandSSID += '          {{ssidList}}';
+                    onDemandSSID += '          <key>Action</key>\n';
+                    onDemandSSID += '          <string>Disconnect</string>\n';
+                    onDemandSSID += '        </dict>\n';
+                    var onlySsids = '<array>\n';
+                    ssids = ssids.split(',');
+                    for (var i=0; i<ssids.length; i++){
+                        onlySsids += '                <string>\n                  ' + ssids[i].trim() + '\n                </string>\n'
+                    }
+                    onlySsids += '           </array>\n'
+                    onDemandSSID = onDemandSSID.replace('{{ssidList}}', onlySsids);
+                    onDemandRulesArr.push(onDemandSSID);
+                }
+
+                if (onDemandRulesArr.length > 0){
+                    onDemandRules = onDemandRules.replace('{{onDemandRulesDict}}', '<key>OnDemandRules</key>\n          <array>\n' + onDemandRulesArr.join('')+'          </array>\n');
+                } else {
+                    onDemandRules = onDemandRules.replace('{{onDemandRulesDict}}', '');
+                }
+
+                xmlString = xmlString.replace('{{onDemandRules}}', onDemandRules)
+                console.log(xmlString);
+                download('vpn.mobileconfig', xmlString);
+            })
+        });
+    </script>
+  </body>
+</html>
