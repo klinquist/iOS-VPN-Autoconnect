@@ -40,6 +40,11 @@
                     <li>Airdrop or Email the file to your iOS device</li>                
                 </ul>
             </div>
+            <div class="form-group">
+                <div class="col-md-4">
+                    <button id="pia" name="pia" class="btn btn-info btn-sm">Auto-fill with Private Internet Access server info</button>
+                </div>
+            </div>
             <!-- Text input-->
             <div class="form-group">
                 <label class="col-md-4 control-label" for="name">Name (that will be displayed on the VPN preferences page)</label>
@@ -255,9 +260,15 @@
                 if ($("#autoconnect").val() == "wifi") $("#ssidformgroup").show()
             });
 
+            $( "#pia" ).click(function(e) {
+                e.preventDefault();
+                $('#sharedsecret').val('mysafety')
+                $('#hostname').val('us-california.privateinternetaccess.com')
+                $('#login').attr("placeholder", "Your PIA 'x' username");
+            });
 
 
-            $('form').on('submit', function (e) {
+            $('#submit').click(function(e) {
                 e.preventDefault();
                 var login = $("#login").val(),
                 password = $('#password').val(),
