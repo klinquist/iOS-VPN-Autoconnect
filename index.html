@@ -280,22 +280,6 @@
                 identifier = $('#identifier').val() || 'com.vpn.vpn1',
                 autoconnect = $('#autoconnect').val();
 
-                if (autoconnect == 'wifi'){
-                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '1');
-                    onDemandRulesArr.push(wifiDict);
-                    onDemandRulesArr.push(wifiDefaultDict);
-                    console.log('Pushing wifi default dict');
-                }
-                if (autoconnect == 'cellular') {
-                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '1');
-                    onDemandRulesArr.push(cellularDefaultDict);
-                    console.log('Pushing on cellular default dict');
-                }
-                if (autoconnect == 'none'){
-                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '0');   
-                    console.log('Removing onDemandEnabled');
-                }
-
                 if (!hostname) return alert('Hostname required')                
                 xmlString = xmlString.replace('{{login}}', login);
                 xmlString = xmlString.replace('{{password}}', password);
@@ -321,11 +305,26 @@
                     var onlySsids = '<array>\n';
                     ssids = ssids.split(',');
                     for (var i=0; i<ssids.length; i++){
-                        onlySsids += '                <string>\n                  ' + ssids[i].trim() + '\n                </string>\n'
+                        onlySsids += ' <string>' + ssids[i].trim() + '</string>\n'
                     }
                     onlySsids += '           </array>\n'
                     onDemandSSID = onDemandSSID.replace('{{ssidList}}', onlySsids);
                     onDemandRulesArr.push(onDemandSSID);
+                }
+                if (autoconnect == 'wifi'){
+                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '1');
+                    onDemandRulesArr.push(wifiDict);
+                    onDemandRulesArr.push(wifiDefaultDict);
+                    console.log('Pushing wifi default dict');
+                }
+                if (autoconnect == 'cellular') {
+                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '1');
+                    onDemandRulesArr.push(cellularDefaultDict);
+                    console.log('Pushing on cellular default dict');
+                }
+                if (autoconnect == 'none'){
+                    onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '0');   
+                    console.log('Removing onDemandEnabled');
                 }
 
                 if (onDemandRulesArr.length > 0){
