@@ -270,6 +270,7 @@
 
             $('#submit').click(function(e) {
                 e.preventDefault();
+                location.reload(true)
                 var login = $("#login").val(),
                 password = $('#password').val(),
                 sharedsecret = $('#sharedsecret').val(),
