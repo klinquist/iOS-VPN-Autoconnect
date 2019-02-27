@@ -336,6 +336,7 @@
                 xmlString = xmlString.replace('{{onDemandRules}}', onDemandRules)
                 console.log(xmlString);
                 download('vpn.mobileconfig', xmlString);
+                location.reload(true)
             })
         });
     </script>
