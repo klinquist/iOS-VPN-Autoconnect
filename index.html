@@ -120,6 +120,13 @@
                     <input id="ssids" name="ssids" type="text" placeholder="" class="form-control input-md">
                 </div>
             </div>
+
+            <div class="form-group">
+                <div class="col-md-4">
+                    Send all traffic over VPN? <input id="override" name="override" type="checkbox" placeholder="" checked>
+                </div>
+            </div>    
+
             <!-- Button -->
             <div class="form-group">
                 <div class="col-md-4">
@@ -183,7 +190,7 @@
         xmlString += '      </dict>\n';
         xmlString += '      {{onDemandRules}}';
         xmlString += '      <key>OverridePrimary</key>\n';
-        xmlString += '      <true/>\n';
+        xmlString += '      <{{OverridePrimary}}/>\n';
         xmlString += '      <key>IPv4</key>\n';
         xmlString += '      <dict>\n';
         xmlString += '        <key>OverridePrimary</key>\n';
@@ -278,7 +285,8 @@
                 name = $('#name').val() || 'Autoconnect VPN',
                 hostname = $('#hostname').val(),
                 identifier = $('#identifier').val() || 'com.vpn.vpn1',
-                autoconnect = $('#autoconnect').val();
+                autoconnect = $('#autoconnect').val(),
+                override = $('#override').is(":checked")
 
                 if (!hostname) return alert('Hostname required')                
                 xmlString = xmlString.replace('{{login}}', login);
@@ -291,6 +299,13 @@
                 xmlString = xmlString.replace('{{uuid2}}', generateUUID());
                 xmlString = xmlString.replace('{{uuid3}}', generateUUID());
                 xmlString = xmlString.replace('{{identifier}}', identifier);
+
+
+                if (override){
+                    xmlString = xmlString.replace('{{OverridePrimary}}', 'true');
+                } else {
+                    xmlString = xmlString.replace('{{OverridePrimary}}', 'false');
+                }
 
                 if (ssids && autoconnect !== 'none'){
                     onDemandSSID = '';
@@ -311,6 +326,7 @@
                     onDemandSSID = onDemandSSID.replace('{{ssidList}}', onlySsids);
                     onDemandRulesArr.push(onDemandSSID);
                 }
+
                 if (autoconnect == 'wifi'){
                     onDemandRules = onDemandRules.replace('{{onDemandEnabled}}', '1');
                     onDemandRulesArr.push(wifiDict);
