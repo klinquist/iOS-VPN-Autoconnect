@@ -37,7 +37,7 @@
                 <h5>Instructions</h5>
                 <ul>
                     <li>Fill out the form below and press the Generate button</li>
-                    <li>Airdrop or Email the file to your iOS device</li>                
+                    <li>Airdrop or Email the file to your iOS device</li>
                 </ul>
             </div>
             <div class="form-group">
@@ -64,7 +64,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="autoconnect">Auto-connect</label>
                 <div class="col-md-4">
-                        <select id="autoconnect" name="vpntype" class="form-control">
+                    <select id="autoconnect" name="autoconnect" class="form-control">
                         <option value="wifi">On wifi only</option>
                         <option value="cellular">On wifi & cellular</option>
                         <option value="none">Don't auto-connect</option>
@@ -77,9 +77,9 @@
                 <label class="col-md-4 control-label" for="vpntype">VPN Type</label>
                 <div class="col-md-4">
                     <select id="vpntype" name="vpntype" class="form-control">
-                        <option value="L2TP">L2TP</option>
-                        <option value="IKEv2">IKEv2 (Not Yet Supported)</option>
-                        <option value="IPSEC">IPSEC (Not Yet Supported)</option>
+                        <option value="l2tp">L2TP</option>
+                        <option value="ikev2">IKEv2 (Not Yet Supported)</option>
+                        <option value="ipsec">IPSEC</option>
                     </select>
                 </div>
             </div>
@@ -113,6 +113,25 @@
                     <input id="sharedsecret" name="sharedsecret" type="password" placeholder="" class="form-control input-md">
                 </div>
             </div>
+            
+            <div class="form-group" id="exchangemodeformgroup" style="display: none;">
+                <!-- Select Basic -->
+                <label class="col-md-4 control-label" for="exchangemode">Exchange mode</label>
+                <div class="col-md-4">
+                    <select id="exchangemode" name="exchangemode" class="form-control">
+                        <option value="main">Main Mode</option>
+                        <option value="aggressive">Aggressive Mode</option>
+                    </select>
+                </div>
+                <!-- Text input-->
+                <div class="form-group" id="localidentifierformgroup" style=" margin-top: 16px; display: none;">
+                    <label class="col-md-4 control-label" for="localidentifier">Local Identifier (Group)</label>
+                    <div class="col-md-4">
+                        <input id="localidentifier" name="localidentifier" type="text" placeholder="" class="form-control input-md" value=''>
+                    </div>
+                </div>
+            </div>
+
             <!-- Text input-->
             <div class="form-group" id='ssidformgroup'>
                 <label class="col-md-4 control-label" for="ssids">Comma-separated list of SSIDs, which when connected to, you do NOT want the VPN to auto-connect</label>
@@ -125,7 +144,7 @@
                 <div class="col-md-4">
                     Send all traffic over VPN? <input id="override" name="override" type="checkbox" placeholder="" checked>
                 </div>
-            </div>    
+            </div>
 
             <!-- Button -->
             <div class="form-group">
@@ -152,7 +171,7 @@
             }
             return chunks.join('-');
         };
-        var xmlString = "";
+        var xmlString = '';
         xmlString += '<?xml version="1.0" encoding="UTF-8"?>\n';
         xmlString += '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n';
         xmlString += '<plist version="1.0">\n';
@@ -168,27 +187,8 @@
         xmlString += '      <string>{{identifier}}</string>\n';
         xmlString += '      <key>PayloadUUID</key>\n';
         xmlString += '      <string>{{uuid1}}</string>\n';
-        xmlString += '      <key>VPNType</key>\n';
-        xmlString += '      <string>L2TP</string>\n';
-        xmlString += '      <key>IPSec</key>\n';
-        xmlString += '      <dict>\n';
-        xmlString += '        <key>AuthenticationMethod</key>\n';
-        xmlString += '        <string>SharedSecret</string>\n';
-        xmlString += '        <key>LocalIdentifierType</key>\n';
-        xmlString += '        <string>KeyID</string>\n';
-        xmlString += '        <key>SharedSecret</key>\n';
-        xmlString += '        <string>{{sharedsecret}}</string>\n';
-        xmlString += '      </dict>\n';
-        xmlString += '      <key>PPP</key>\n';
-        xmlString += '      <dict>\n';
-        xmlString += '        <key>AuthName</key>\n';
-        xmlString += '        <string>{{login}}</string>\n';
-        xmlString += '        <key>AuthPassword</key>\n';
-        xmlString += '        <string>{{password}}</string>\n';
-        xmlString += '        <key>CommRemoteAddress</key>\n';
-        xmlString += '        <string>{{hostname}}</string>\n';
-        xmlString += '      </dict>\n';
-        xmlString += '      {{onDemandRules}}';
+        xmlString += '{{vpnTypeDictionaries}}';
+        xmlString += '{{onDemandRules}}';
         xmlString += '      <key>OverridePrimary</key>\n';
         xmlString += '      <{{OverridePrimary}}/>\n';
         xmlString += '      <key>IPv4</key>\n';
@@ -217,6 +217,50 @@
         xmlString += '</dict>\n';
         xmlString += '</plist>';
 
+        var vpnTypeL2tp = '';
+        vpnTypeL2tp += '      <key>VPNType</key>\n';
+        vpnTypeL2tp += '      <string>L2TP</string>\n';
+        vpnTypeL2tp += '      <key>IPSec</key>\n';
+        vpnTypeL2tp += '      <dict>\n';
+        vpnTypeL2tp += '        <key>AuthenticationMethod</key>\n';
+        vpnTypeL2tp += '        <string>SharedSecret</string>\n';
+        vpnTypeL2tp += '        <key>LocalIdentifierType</key>\n';
+        vpnTypeL2tp += '        <string>KeyID</string>\n';
+        vpnTypeL2tp += '        <key>SharedSecret</key>\n';
+        vpnTypeL2tp += '        <string>{{sharedsecret}}</string>\n';
+        vpnTypeL2tp += '      </dict>\n';
+        vpnTypeL2tp += '      <key>PPP</key>\n';
+        vpnTypeL2tp += '      <dict>\n';
+        vpnTypeL2tp += '        <key>AuthName</key>\n';
+        vpnTypeL2tp += '        <string>{{login}}</string>\n';
+        vpnTypeL2tp += '        <key>AuthPassword</key>\n';
+        vpnTypeL2tp += '        <string>{{password}}</string>\n';
+        vpnTypeL2tp += '        <key>CommRemoteAddress</key>\n';
+        vpnTypeL2tp += '        <string>{{hostname}}</string>\n';
+        vpnTypeL2tp += '      </dict>\n';
+
+        var vpnTypeIpsec = '';
+        vpnTypeIpsec += '      <key>VPNType</key>\n';
+        vpnTypeIpsec += '      <string>IPSec</string>\n';
+        vpnTypeIpsec += '      <key>IPSec</key>\n';
+        vpnTypeIpsec += '      <dict>\n';
+        vpnTypeIpsec += '        <key>RemoteAddress</key>\n';
+        vpnTypeIpsec += '        <string>{{hostname}}</string>\n';
+        vpnTypeIpsec += '        <key>AuthenticationMethod</key>\n';
+        vpnTypeIpsec += '        <string>SharedSecret</string>\n';
+        vpnTypeIpsec += '        <key>SharedSecret</key>\n';
+        vpnTypeIpsec += '        <string>{{sharedsecret}}</string>\n';
+        vpnTypeIpsec += '        <key>XAuthEnabled</key>\n';
+        vpnTypeIpsec += '        <integer>1</integer>\n';
+        vpnTypeIpsec += '        <key>XAuthName</key>\n';
+        vpnTypeIpsec += '        <string>{{login}}</string>\n';
+        vpnTypeIpsec += '        <key>XAuthPassword</key>\n';
+        vpnTypeIpsec += '        <string>{{password}}</string>\n';
+        vpnTypeIpsec += '        <key>LocalIdentifier</key>\n';
+        vpnTypeIpsec += '        <string>{{localidentifier}}</string>\n';
+        vpnTypeIpsec += '        <key>LocalIdentifierType</key>\n';
+        vpnTypeIpsec += '        <string>KeyID</string>\n';
+        vpnTypeIpsec += '      </dict>\n';
 
         onDemandRules = '';
         onDemandRules += '<key>OnDemandEnabled</key>\n';
@@ -267,7 +311,24 @@
                 if ($("#autoconnect").val() == "wifi") $("#ssidformgroup").show()
             });
 
-            $( "#pia" ).click(function(e) {
+            $('#vpntype').change(function () {
+                if ($('#vpntype').val() == 'l2tp') $('#exchangemodeformgroup').hide()
+                if ($('#vpntype').val() == 'ipsec') $('#exchangemodeformgroup').show()
+            });
+            
+            $('#exchangemode').change(function () {
+                if ($('#exchangemode').val() == 'main') {
+                    $('#localidentifier').empty();
+                    $('#localidentifierformgroup').hide();
+                }
+                if ($('#exchangemode').val() == 'aggressive') {
+                    let host = $('#hostname').val();
+                    $('#localidentifier').val(host);
+                    $('#localidentifierformgroup').show();
+                }
+            });
+
+            $('#pia').click(function(e) {
                 e.preventDefault();
                 $('#sharedsecret').val('mysafety')
                 $('#hostname').val('us-california.privateinternetaccess.com')
@@ -286,9 +347,25 @@
                 hostname = $('#hostname').val(),
                 identifier = $('#identifier').val() || 'com.vpn.vpn1',
                 autoconnect = $('#autoconnect').val(),
-                override = $('#override').is(":checked")
+                override = $('#override').is(":checked"),
+                localidentifier = $('#localidentifier').val()
 
-                if (!hostname) return alert('Hostname required')                
+
+                if (!hostname) return alert('Hostname required');
+                switch (vpntype) {
+
+                    case 'l2tp':
+                        xmlString = xmlString.replace('{{vpnTypeDictionaries}}', vpnTypeL2tp)
+                        break;
+
+                    case 'ipsec':
+                        xmlString = xmlString.replace('{{vpnTypeDictionaries}}', vpnTypeIpsec)
+                        break;
+
+                    default:
+                        xmlString = xmlString.replace('{{vpnTypeDictionaries}}', '')
+                        break;
+                }
                 xmlString = xmlString.replace('{{login}}', login);
                 xmlString = xmlString.replace('{{password}}', password);
                 xmlString = xmlString.replace('{{sharedsecret}}', sharedsecret);
@@ -299,7 +376,7 @@
                 xmlString = xmlString.replace('{{uuid2}}', generateUUID());
                 xmlString = xmlString.replace('{{uuid3}}', generateUUID());
                 xmlString = xmlString.replace('{{identifier}}', identifier);
-
+                xmlString = xmlString.replace('{{localidentifier}}', localidentifier);
 
                 if (override){
                     xmlString = xmlString.replace('{{OverridePrimary}}', 'true');
