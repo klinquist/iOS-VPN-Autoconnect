@@ -292,9 +292,17 @@
         cellularDefaultDict += '          <string>Connect</string>\n';  //Default state tells it what to do by default. If wifi only is enabled, this should be disabled (so disable on cellular)
         cellularDefaultDict += '        </dict>\n';
 
+        function escapeHtml(unsafe) {
+            // https://stackoverflow.com/a/6234804/20946335
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
 
         $(document).ready(function () {
-
             function download(filename, text) {
                 var element = document.createElement('a');
                 element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -367,7 +375,7 @@
                         break;
                 }
                 xmlString = xmlString.replace('{{login}}', login);
-                xmlString = xmlString.replace('{{password}}', password);
+                xmlString = xmlString.replace('{{password}}', escapeHtml(password));
                 xmlString = xmlString.replace('{{sharedsecret}}', sharedsecret);
                 xmlString = xmlString.replace('{{hostname}}', hostname);
                 xmlString = xmlString.replace('{{name}}', name);
